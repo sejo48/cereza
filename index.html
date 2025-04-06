@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orden de Pedido - Cerezas del Café</title>
+    <style>
+        /* --- Estilos Generales (Nueva Paleta) --- */
+        body {
+            font-family: 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            line-height: 1.6; margin: 0; padding: 20px;
+            background-color: #f8f9fa; /* Fondo gris muy claro (mantenido para contraste) */
+            color: #212529; /* Texto oscuro principal */
+            -webkit-text-size-adjust: 100%;
+            text-size-adjust: 100%;
+        }
+        .container {
+            max-width: 750px; margin: 20px auto; background: #ffffff; /* Fondo blanco */
+            padding: 30px; border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border: 1px solid #dee2e6; /* Borde gris claro (mantenido) */
+        }
+        /* Títulos con nueva paleta */
+        h1 {
+            color: #C91959; /* Magenta/Pinkish-Red */
+            text-align: center; margin-bottom: 15px; font-weight: 600; font-size: 2.2em;
+           }
+        h2 {
+            color: #E14591; /* Pink */
+            text-align: center; margin-bottom: 35px; font-size: 1.4em; font-weight: 400;
+           }
+        /* Secciones y Títulos de Categoría con nueva paleta */
+        .seccion-formulario { margin-bottom: 35px; border-bottom: 1px solid #dee2e6; padding-bottom: 25px; }
+        .seccion-formulario:last-of-type { border-bottom: none; }
+        .seccion-formulario h3 {
+            color: #C91959; /* Magenta/Pinkish-Red */
+            border-bottom: 2px solid #E14591; /* Pink */
+            padding-bottom: 8px; margin-bottom: 20px; font-size: 1.3em; font-weight: 500;
+        }
+        /* Datos del Cliente (estilos de borde y foco actualizados) */
+        .campo-cliente { margin-bottom: 15px; }
+        .campo-cliente label { display: block; margin-bottom: 5px; font-weight: 500; color: #495057; }
+        .campo-cliente input[type="text"], .campo-cliente input[type="tel"] {
+            width: 100%; padding: 10px; border: 1px solid #ced4da;
+            border-radius: 6px; background-color: #ffffff;
+            color: #212529;
+            font-size: 1em; box-sizing: border-box;
+        }
+        .campo-cliente input[type="text"]:focus, .campo-cliente input[type="tel"]:focus {
+            outline: none; border-color: #E14591; /* Pink */
+            box-shadow: 0 0 5px rgba(225, 69, 145, 0.4); /* Sombra Rosa */
+        }
+        /* Items del Menú con nueva paleta */
+        .item-menu {
+            display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center;
+            margin-bottom: 15px; padding: 15px; border: 1px solid #dee2e6;
+            border-radius: 8px; background-color: #EBD1EA; /* Light Pink/Lilac */
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .item-menu:hover { background-color: #e1c1e6; /* Lilac ligeramente más oscuro */ box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08); }
+        .item-info { flex-grow: 1; margin-right: 15px; flex-basis: 60%; min-width: 200px; }
+        .item-info .nombre-principal { display: block; font-weight: 500; font-size: 1.05em; color: #343a40; margin-bottom: 3px; }
+        .item-info .descripcion { display: block; font-size: 0.85em; color: #583f5b; } /* Gris/Morado oscuro para descripción */
+        .item-precio {
+            font-weight: bold; color: #52A051; /* Green */
+            min-width: 70px; text-align: right; font-size: 1.1em; margin-left: 10px; flex-basis: 15%;
+        }
+        /* Controles de Cantidad (foco actualizado) */
+        .item-cantidad { display: flex; align-items: center; margin-left: 15px; flex-basis: 20%; min-width: 100px; }
+        .item-cantidad label { margin-right: 8px; font-size: 0.9em; color: #495057; }
+        .item-cantidad input[type="number"] {
+            width: 65px; padding: 8px; text-align: center; border: 1px solid #ced4da;
+            border-radius: 6px; background-color: #ffffff; color: #212529; font-size: 1em; -moz-appearance: textfield;
+        }
+        .item-cantidad input[type="number"]:focus {
+            outline: none; border-color: #E14591; /* Pink */
+            box-shadow: 0 0 5px rgba(225, 69, 145, 0.4); /* Sombra Rosa */
+         }
+        input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        /* Notas Adicionales (foco actualizado) */
+        #notas-container label { display: block; margin-bottom: 10px; font-weight: 500; color: #495057; }
+        #notas {
+            width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 6px;
+            background-color: #ffffff; color: #212529; font-size: 0.95em;
+            box-sizing: border-box; min-height: 80px; resize: vertical;
+        }
+        #notas:focus {
+            outline: none; border-color: #E14591; /* Pink */
+            box-shadow: 0 0 5px rgba(225, 69, 145, 0.4); /* Sombra Rosa */
+        }
+        /* Botón Principal con nueva paleta */
+        #generar-pedido {
+            display: block; width: 100%; padding: 15px;
+            background: linear-gradient(to bottom, #E14591, #C91959); /* Pink to Magenta/Red */
+            color: white; border: none; border-radius: 8px; font-size: 1.15em; cursor: pointer;
+            margin-top: 25px; font-weight: bold; text-align: center; text-decoration: none;
+            transition: background 0.3s ease, transform 0.1s ease; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+        }
+        #generar-pedido:hover {
+             background: linear-gradient(to bottom, #C91959, #640007); /* Magenta/Red to Dark Red */
+             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        #generar-pedido:active { transform: scale(0.98); }
+        /* Mensaje de Error con nueva paleta */
+        #mensaje-error {
+            color: #640007; /* Dark Red */
+            background-color: #EBD1EA; /* Light Pink/Lilac */
+            border: 1px solid #e1c1e6; /* Borde Lilac más oscuro */
+            padding: 10px; border-radius: 6px; margin-top: 15px; text-align: center; display: none;
+        }
+
+        /* --- Estilos del Modal (Tema Actualizado) --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: none; justify-content: center; align-items: center;
+            z-index: 1000; padding: 20px; box-sizing: border-box;
+        }
+        .modal-content {
+            background: #ffffff;
+            padding: 25px 30px; border-radius: 10px; border: 1px solid #dee2e6;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1001; max-width: 90%; width: 550px; max-height: 90vh;
+            overflow-y: auto; position: relative;
+        }
+        .modal-content h3 {
+            color: #C91959; /* Magenta/Pinkish-Red */
+            margin-top: 0; margin-bottom: 20px; text-align: center; font-size: 1.5em;
+        }
+        .modal-content pre { /* Área de resumen actualizada */
+            background-color: #EBD1EA; /* Light Pink/Lilac */
+            color: #212529;
+            padding: 15px; border-radius: 6px; border: 1px solid #e1c1e6; /* Borde Lilac más oscuro */
+            font-family: monospace; white-space: pre-wrap; word-wrap: break-word;
+            max-height: 40vh; overflow-y: auto; font-size: 0.95em;
+        }
+        .modal-botones { display: flex; justify-content: space-between; margin-top: 25px; gap: 15px; }
+        .modal-botones button, .modal-botones a {
+             flex-grow: 1; padding: 12px 15px; border: none; border-radius: 8px; font-size: 1em;
+             cursor: pointer; font-weight: bold; text-align: center;
+             transition: background 0.3s ease, transform 0.1s ease; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .modal-botones button:active, .modal-botones a:active { transform: scale(0.97); }
+
+        #modal-boton-cerrar { /* Botón Corregir (mantenido gris) */
+            background-color: #6c757d; color: white;
+        }
+        #modal-boton-cerrar:hover { background-color: #5a6268; }
+
+        #modal-boton-enviar { /* Botón Enviar WhatsApp (mantenido verde) */
+            background: linear-gradient(to bottom, #25D366, #128C7E); color: white;
+            text-decoration: none; display: inline-block;
+        }
+        #modal-boton-enviar:hover { background: linear-gradient(to bottom, #128C7E, #075E54); }
+
+        .modal-close-btn { /* Botón X */
+            position: absolute; top: 10px; right: 15px; font-size: 1.8em; font-weight: bold;
+            color: #adb5bd; cursor: pointer; line-height: 1;
+        }
+        .modal-close-btn:hover { color: #495057; }
+
+        /* --- Media Query para Móviles (sin cambios funcionales) --- */
+        @media (max-width: 600px) {
+            h1 { font-size: 1.8em; }
+            h2 { font-size: 1.2em; }
+            .container { padding: 20px; margin: 10px auto; }
+            .item-info { margin-right: 10px; min-width: 150px; }
+            .item-cantidad { margin-left: 10px; min-width: 90px; }
+            .item-cantidad input[type="number"] { width: 55px; }
+            .modal-content { padding: 20px 25px; width: 95%; }
+            .modal-botones { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Orden de Pedido - Cerezas del Café</h1>
+    <h2>Realiza tu Pedido Online</h2>
+
+    <form id="menu-form">
+        <div class="seccion-formulario">
+            <h3>Datos del Cliente</h3>
+            <div class="campo-cliente">
+                <label for="cliente-nombre">Nombre Completo:</label>
+                <input type="text" id="cliente-nombre" name="cliente-nombre" placeholder="Escribe tu nombre aquí" required>
+            </div>
+            <div class="campo-cliente">
+                <label for="cliente-telefono">Número de Teléfono:</label>
+                <input type="tel" id="cliente-telefono" name="cliente-telefono" placeholder="Ej: 8888-8888" required pattern="[0-9]{4}-?[0-9]{4}">
+            </div>
+             <div id="mensaje-error"></div>
+        </div>
+
+        <div class="seccion-formulario">
+            <h3>Desayunos</h3>
+            <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Desayuno Cerezas del Café</span><span class="descripcion">Gallo pinto, 2 huevos al gusto, tomate, plátano maduro, tocineta, aguacate, tostadas/tortillas, café/jugo.</span></div> <div class="item-precio">₡4.700</div> <div class="item-cantidad"><label for="des_cerezas">Cant:</label><input type="number" id="des_cerezas" name="des_cerezas" min="0" value="0" data-nombre="Desayuno Cerezas del Café" data-precio="4700"></div> </div>
+            <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Desayuno casual</span><span class="descripcion">Gallo pinto, tomate, huevos al gusto, tostadas/tortillas, café/jugo.</span></div> <div class="item-precio">₡3.900</div> <div class="item-cantidad"><label for="des_casual">Cant:</label><input type="number" id="des_casual" name="des_casual" min="0" value="0" data-nombre="Desayuno casual" data-precio="3900"></div> </div>
+        </div>
+
+        <div class="seccion-formulario">
+            <h3>Omelettes</h3>
+            <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Omelette jamón y queso</span><span class="descripcion">Relleno de queso y jamón, con tostadas y aguacate.</span></div> <div class="item-precio">₡3.850</div> <div class="item-cantidad"><label for="omelette_jamon">Cant:</label><input type="number" id="omelette_jamon" name="omelette_jamon" min="0" value="0" data-nombre="Omelette jamón y queso" data-precio="3850"></div> </div>
+            <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Omelette tocineta y queso</span><span class="descripcion">Relleno de queso y tocineta, con tostadas y aguacate.</span></div> <div class="item-precio">₡3.850</div> <div class="item-cantidad"><label for="omelette_tocineta">Cant:</label><input type="number" id="omelette_tocineta" name="omelette_tocineta" min="0" value="0" data-nombre="Omelette tocineta y queso" data-precio="3850"></div> </div>
+            <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Omelette vegetariano</span><span class="descripcion">Queso, cebolla caramelizada, hongos, tomate, espinacas, con tostadas y aguacate.</span></div> <div class="item-precio">₡3.800</div> <div class="item-cantidad"><label for="omelette_veg">Cant:</label><input type="number" id="omelette_veg" name="omelette_veg" min="0" value="0" data-nombre="Omelette vegetariano" data-precio="3800"></div> </div>
+        </div>
+
+        <div class="seccion-formulario">
+            <h3>Otros Antojos</h3>
+             <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Quesadilla Carne</span><span class="descripcion">Tortilla de harina grande rellena. Con aguacate y pico de gallo.</span></div> <div class="item-precio">₡4.250</div> <div class="item-cantidad"><label for="quesadilla_carne">Cant:</label><input type="number" id="quesadilla_carne" name="quesadilla_carne" min="0" value="0" data-nombre="Quesadilla Carne" data-precio="4250"></div> </div>
+             <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Quesadilla Pollo</span><span class="descripcion">Tortilla de harina grande rellena. Con aguacate y pico de gallo.</span></div> <div class="item-precio">₡4.250</div> <div class="item-cantidad"><label for="quesadilla_pollo">Cant:</label><input type="number" id="quesadilla_pollo" name="quesadilla_pollo" min="0" value="0" data-nombre="Quesadilla Pollo" data-precio="4250"></div> </div>
+             <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Quesadilla Chicharrón</span><span class="descripcion">Tortilla de harina grande rellena. Con aguacate y pico de gallo.</span></div> <div class="item-precio">₡4.250</div> <div class="item-cantidad"><label for="quesadilla_chicharron">Cant:</label><input type="number" id="quesadilla_chicharron" name="quesadilla_chicharron" min="0" value="0" data-nombre="Quesadilla Chicharrón" data-precio="4250"></div> </div>
+            <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Patacones</span><span class="descripcion">Con frijoles molidos, carne mechada, queso gratinado, pico de gallo y aguacate.</span></div> <div class="item-precio">₡4.200</div> <div class="item-cantidad"><label for="patacones_comp">Cant:</label><input type="number" id="patacones_comp" name="patacones_comp" min="0" value="0" data-nombre="Patacones (Completos)" data-precio="4200"></div> </div>
+        </div>
+
+        <div class="seccion-formulario">
+            <h3>Entraditas y Papas</h3>
+            <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Papas Pequeñas</span></div> <div class="item-precio">₡1.200</div> <div class="item-cantidad"><label for="papas_peq">Cant:</label><input type="number" id="papas_peq" name="papas_peq" min="0" value="0" data-nombre="Papas Pequeñas" data-precio="1200"></div> </div>
+            <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Papas Grandes</span></div> <div class="item-precio">₡1.900</div> <div class="item-cantidad"><label for="papas_gra">Cant:</label><input type="number" id="papas_gra" name="papas_gra" min="0" value="0" data-nombre="Papas Grandes" data-precio="1900"></div> </div>
+            <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Crema de tomate pequeña</span><span class="descripcion">Opción de entrada</span></div> <div class="item-precio">₡2.400</div> <div class="item-cantidad"><label for="crema_tom_peq">Cant:</label><input type="number" id="crema_tom_peq" name="crema_tom_peq" min="0" value="0" data-nombre="Crema de tomate pequeña" data-precio="2400"></div> </div>
+        </div>
+
+         <div class="seccion-formulario">
+            <h3>Casados Cerezas del Café</h3>
+             <span class="descripcion" style="display:block; margin-bottom: 10px; color: #583f5b;">Incluye vaso de té frío. Arroz, frijoles, ensalada verde, plátano maduro, huevo frito y proteína a elegir.</span>
+            <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Casado con Pollo</span></div> <div class="item-precio">₡4.100</div> <div class="item-cantidad"><label for="casado_pollo_cer">Cant:</label><input type="number" id="casado_pollo_cer" name="casado_pollo_cer" min="0" value="0" data-nombre="Casado con Pollo" data-precio="4100"></div> </div>
+            <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Casado con Carne en salsa</span></div> <div class="item-precio">₡4.100</div> <div class="item-cantidad"><label for="casado_carne_salsa">Cant:</label><input type="number" id="casado_carne_salsa" name="casado_carne_salsa" min="0" value="0" data-nombre="Casado Carne en salsa" data-precio="4100"></div> </div>
+            <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Casado con Bistec</span></div> <div class="item-precio">₡4.100</div> <div class="item-cantidad"><label for="casado_bistec_cer">Cant:</label><input type="number" id="casado_bistec_cer" name="casado_bistec_cer" min="0" value="0" data-nombre="Casado con Bistec" data-precio="4100"></div> </div>
+            <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Casado con Chuleta de cerdo</span></div> <div class="item-precio">₡4.100</div> <div class="item-cantidad"><label for="casado_chuleta_cer">Cant:</label><input type="number" id="casado_chuleta_cer" name="casado_chuleta_cer" min="0" value="0" data-nombre="Casado Chuleta de cerdo" data-precio="4100"></div> </div>
+            <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Casado con Pescado</span></div> <div class="item-precio">₡4.550</div> <div class="item-cantidad"><label for="casado_pescado_cer">Cant:</label><input type="number" id="casado_pescado_cer" name="casado_pescado_cer" min="0" value="0" data-nombre="Casado con Pescado" data-precio="4550"></div> </div>
+         </div>
+
+        <div class="seccion-formulario">
+            <h3>Platos Fuertes</h3>
+            <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Pollo Parmesano</span><span class="descripcion">Filete empanizado, salsa tomate, queso gratinado, puré de papa, ensalada verde.</span></div> <div class="item-precio">₡4.550</div> <div class="item-cantidad"><label for="pollo_parm">Cant:</label><input type="number" id="pollo_parm" name="pollo_parm" min="0" value="0" data-nombre="Pollo Parmesano" data-precio="4550"></div> </div>
+            <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Tilapia Parmesana</span><span class="descripcion">Filete empanizado, salsa tomate, queso gratinado, puré de papa, ensalada verde.</span></div> <div class="item-precio">₡4.700</div> <div class="item-cantidad"><label for="tilapia_parm">Cant:</label><input type="number" id="tilapia_parm" name="tilapia_parm" min="0" value="0" data-nombre="Tilapia Parmesana" data-precio="4700"></div> </div>
+            <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Tilapia en Salsa de la Casa</span><span class="descripcion">A la plancha, salsa blanca (espinaca, hongos, especias), arroz, ensalada verde. Cambio carbo +₡500 (indicar en notas).</span></div> <div class="item-precio">₡4.700</div> <div class="item-cantidad"><label for="tilapia_salsa">Cant:</label><input type="number" id="tilapia_salsa" name="tilapia_salsa" min="0" value="0" data-nombre="Tilapia en Salsa de la Casa" data-precio="4700"></div> </div>
+            <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Arroz con Camarones</span><span class="descripcion">Con papas fritas y ensalada verde con pico de gallo.</span></div> <div class="item-precio">₡5.000</div> <div class="item-cantidad"><label for="arroz_camarones_cer">Cant:</label><input type="number" id="arroz_camarones_cer" name="arroz_camarones_cer" min="0" value="0" data-nombre="Arroz con Camarones" data-precio="5000"></div> </div>
+            <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Fajitas de Pollo</span><span class="descripcion">150g, cebolla, chile dulce. Con tortillas, ensalada verde, frijoles molidos.</span></div> <div class="item-precio">₡5.550</div> <div class="item-cantidad"><label for="fajitas_pollo">Cant:</label><input type="number" id="fajitas_pollo" name="fajitas_pollo" min="0" value="0" data-nombre="Fajitas de Pollo" data-precio="5550"></div> </div>
+            <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Fajitas de Carne</span><span class="descripcion">150g, cebolla, chile dulce. Con tortillas, ensalada verde, frijoles molidos.</span></div> <div class="item-precio">₡5.550</div> <div class="item-cantidad"><label for="fajitas_carne">Cant:</label><input type="number" id="fajitas_carne" name="fajitas_carne" min="0" value="0" data-nombre="Fajitas de Carne" data-precio="5550"></div> </div>
+            <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Fajitas Mixtas</span><span class="descripcion">200g (pollo y carne), cebolla, chile dulce. Con tortillas, ensalada verde, frijoles molidos.</span></div> <div class="item-precio">₡6.550</div> <div class="item-cantidad"><label for="fajitas_mixtas">Cant:</label><input type="number" id="fajitas_mixtas" name="fajitas_mixtas" min="0" value="0" data-nombre="Fajitas Mixtas" data-precio="6550"></div> </div>
+            <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Tiras de Pollo empanizado con coco</span><span class="descripcion">Salsa mango-chipotle, arroz, ensalada verde. Cambio carbo +₡500 (indicar en notas).</span></div> <div class="item-precio">₡4.550</div> <div class="item-cantidad"><label for="tiras_pollo_coco">Cant:</label><input type="number" id="tiras_pollo_coco" name="tiras_pollo_coco" min="0" value="0" data-nombre="Tiras Pollo Coco" data-precio="4550"></div> </div>
+            <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Chifricerezas</span><span class="descripcion">Frijoles tiernos, arroz, chicharrón, pico de gallo, aguacate, tortillas tostadas.</span></div> <div class="item-precio">₡4.100</div> <div class="item-cantidad"><label for="chifricerezas">Cant:</label><input type="number" id="chifricerezas" name="chifricerezas" min="0" value="0" data-nombre="Chifricerezas" data-precio="4100"></div> </div>
+        </div>
+
+        <div class="seccion-formulario">
+            <h3>Ensaladas y Sopas</h3>
+            <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Ensalada Cerezas del Café</span><span class="descripcion">Lechuga, cherry, maíz, cebolla morada, aguacate, nueces, uvas, pollo plancha, aderezo mostaza miel.</span></div> <div class="item-precio">₡4.900</div> <div class="item-cantidad"><label for="ens_cerezas">Cant:</label><input type="number" id="ens_cerezas" name="ens_cerezas" min="0" value="0" data-nombre="Ensalada Cerezas del Café" data-precio="4900"></div> </div>
+             <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Ensalada César con pollo</span><span class="descripcion">Lechuga romana, cherry, crotones, parmesano.</span></div> <div class="item-precio">₡4.500</div> <div class="item-cantidad"><label for="ens_cesar_pollo">Cant:</label><input type="number" id="ens_cesar_pollo" name="ens_cesar_pollo" min="0" value="0" data-nombre="Ensalada César con pollo" data-precio="4500"></div> </div>
+            <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Ensalada César sin pollo</span><span class="descripcion">Lechuga romana, cherry, crotones, parmesano.</span></div> <div class="item-precio">₡4.000</div> <div class="item-cantidad"><label for="ens_cesar_sin">Cant:</label><input type="number" id="ens_cesar_sin" name="ens_cesar_sin" min="0" value="0" data-nombre="Ensalada César sin pollo" data-precio="4000"></div> </div>
+            <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Sopa Azteca con pollo</span><span class="descripcion">Con queso, aguacate y tortilla chips.</span></div> <div class="item-precio">₡4.300</div> <div class="item-cantidad"><label for="sopa_azt_pollo">Cant:</label><input type="number" id="sopa_azt_pollo" name="sopa_azt_pollo" min="0" value="0" data-nombre="Sopa Azteca con pollo" data-precio="4300"></div> </div>
+            <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Sopa Azteca sin pollo</span><span class="descripcion">Con queso, aguacate y tortilla chips.</span></div> <div class="item-precio">₡3.950</div> <div class="item-cantidad"><label for="sopa_azt_sin">Cant:</label><input type="number" id="sopa_azt_sin" name="sopa_azt_sin" min="0" value="0" data-nombre="Sopa Azteca sin pollo" data-precio="3950"></div> </div>
+            <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Crema de tomate Grande</span><span class="descripcion">Con queso parmesano, albahaca y tostadas.</span></div> <div class="item-precio">₡4.200</div> <div class="item-cantidad"><label for="crema_tom_gra">Cant:</label><input type="number" id="crema_tom_gra" name="crema_tom_gra" min="0" value="0" data-nombre="Crema de tomate Grande" data-precio="4200"></div> </div>
+        </div>
+
+        <div class="seccion-formulario">
+             <h3>Sándwiches</h3>
+             <span class="descripcion" style="display:block; margin-bottom: 10px; color: #583f5b;">Incluyen 1 acompañamiento (Papas, ensalada o crema de tomate). Especificar en notas. Ver extras abajo.</span>
+             <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Sándwich Cerezas del Café</span><span class="descripcion">Lechuga, tomate, espinacas, pollo plancha, queso mozarella.</span></div> <div class="item-precio">₡4.700</div> <div class="item-cantidad"><label for="sand_cerezas">Cant:</label><input type="number" id="sand_cerezas" name="sand_cerezas" min="0" value="0" data-nombre="Sándwich Cerezas del Café" data-precio="4700"></div> </div>
+             <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Sándwich Caprese</span><span class="descripcion">Doble mozarella, tomate, pesto, albahaca fresca.</span></div> <div class="item-precio">₡4.400</div> <div class="item-cantidad"><label for="sand_caprese">Cant:</label><input type="number" id="sand_caprese" name="sand_caprese" min="0" value="0" data-nombre="Sándwich Caprese" data-precio="4400"></div> </div>
+             <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Sándwich de pavo</span><span class="descripcion">Lechuga, tomate, aguacate, cebolla caramelizada, jamón de pavo, queso.</span></div> <div class="item-precio">₡4.800</div> <div class="item-cantidad"><label for="sand_pavo">Cant:</label><input type="number" id="sand_pavo" name="sand_pavo" min="0" value="0" data-nombre="Sándwich de pavo" data-precio="4800"></div> </div>
+             <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Sándwich tico</span><span class="descripcion">Frijoles molidos, lechuga, tomate, mano de piedra, queso, salsa culantro.</span></div> <div class="item-precio">₡4.750</div> <div class="item-cantidad"><label for="sand_tico">Cant:</label><input type="number" id="sand_tico" name="sand_tico" min="0" value="0" data-nombre="Sándwich tico" data-precio="4750"></div> </div>
+             <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Sándwich de fajitas de queso</span><span class="descripcion">Fajitas res, cebolla, chile, hongos, doble mozarella.</span></div> <div class="item-precio">₡4.800</div> <div class="item-cantidad"><label for="sand_fajitas">Cant:</label><input type="number" id="sand_fajitas" name="sand_fajitas" min="0" value="0" data-nombre="Sándwich de fajitas de queso" data-precio="4800"></div> </div>
+             <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Club sándwich</span><span class="descripcion">Pan cuadrado grande, mayonesa, lechuga, tomate, tocineta, pollo plancha, mozarella.</span></div> <div class="item-precio">₡4.950</div> <div class="item-cantidad"><label for="sand_club">Cant:</label><input type="number" id="sand_club" name="sand_club" min="0" value="0" data-nombre="Club sándwich" data-precio="4950"></div> </div>
+             <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Sándwich vegetariano</span><span class="descripcion">Lechuga, tomate, hummus, cebolla caramelizada, espinacas, zucchini, hongos, mozarella.</span></div> <div class="item-precio">₡4.500</div> <div class="item-cantidad"><label for="sand_veg">Cant:</label><input type="number" id="sand_veg" name="sand_veg" min="0" value="0" data-nombre="Sándwich vegetariano" data-precio="4500"></div> </div>
+        </div>
+
+        <div class="seccion-formulario">
+             <h3>Wraps</h3>
+             <span class="descripcion" style="display:block; margin-bottom: 10px; color: #583f5b;">Incluyen 1 acompañamiento (Papas, ensalada o crema de tomate). Especificar en notas. Ver extras abajo.</span>
+             <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Wrap de pavo/tocineta</span><span class="descripcion">Aderezo guacamole, lechuga, tomate, cebolla morada, tocineta, jamón de pavo, queso.</span></div> <div class="item-precio">₡4.600</div> <div class="item-cantidad"><label for="wrap_pavo_toc">Cant:</label><input type="number" id="wrap_pavo_toc" name="wrap_pavo_toc" min="0" value="0" data-nombre="Wrap pavo/tocineta" data-precio="4600"></div> </div>
+             <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Wrap Pollo Empanizado</span><span class="descripcion">Aderezo mostaza miel, lechuga, tomate, mozarella, maíz dulce, tiras pollo empanizado.</span></div> <div class="item-precio">₡4.750</div> <div class="item-cantidad"><label for="wrap_pollo_emp">Cant:</label><input type="number" id="wrap_pollo_emp" name="wrap_pollo_emp" min="0" value="0" data-nombre="Wrap Pollo Empanizado" data-precio="4750"></div> </div>
+             <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Philly wrap</span><span class="descripcion">Salsa pizza, lechuga, tomate, fajitas de carne, cebolla, mozarella.</span></div> <div class="item-precio">₡4.900</div> <div class="item-cantidad"><label for="wrap_philly">Cant:</label><input type="number" id="wrap_philly" name="wrap_philly" min="0" value="0" data-nombre="Philly wrap" data-precio="4900"></div> </div>
+             <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Wrap vegetariano</span><span class="descripcion">Hummus, lechuga, tomate, cebolla caramelizada, zucchini, chile morrón, hongos, espinaca, queso.</span></div> <div class="item-precio">₡4.500</div> <div class="item-cantidad"><label for="wrap_veg">Cant:</label><input type="number" id="wrap_veg" name="wrap_veg" min="0" value="0" data-nombre="Wrap vegetariano" data-precio="4500"></div> </div>
+        </div>
+
+         <div class="seccion-formulario">
+             <h3>Arreglados</h3>
+             <span class="descripcion" style="display:block; margin-bottom: 10px; color: #583f5b;">Incluyen 1 acompañamiento (Papas, ensalada o crema de tomate). Especificar en notas. Ver extras abajo.</span>
+             <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Arreglado Cerezas del Café</span><span class="descripcion">Lechuga, tomate, carne mechada, jamón, queso, frijoles molidos.</span></div> <div class="item-precio">₡4.300</div> <div class="item-cantidad"><label for="arreg_cerezas">Cant:</label><input type="number" id="arreg_cerezas" name="arreg_cerezas" min="0" value="0" data-nombre="Arreglado Cerezas del Café" data-precio="4300"></div> </div>
+             <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Arreglado tico</span><span class="descripcion">Lechuga, tomate, frijoles molidos, mano de piedra, queso.</span></div> <div class="item-precio">₡4.100</div> <div class="item-cantidad"><label for="arreg_tico">Cant:</label><input type="number" id="arreg_tico" name="arreg_tico" min="0" value="0" data-nombre="Arreglado tico" data-precio="4100"></div> </div>
+             <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Arreglado de jamón y queso</span><span class="descripcion">Lechuga, tomate, jamón, queso, salsa de la casa.</span></div> <div class="item-precio">₡3.900</div> <div class="item-cantidad"><label for="arreg_jamon_q">Cant:</label><input type="number" id="arreg_jamon_q" name="arreg_jamon_q" min="0" value="0" data-nombre="Arreglado jamón y queso" data-precio="3900"></div> </div>
+        </div>
+
+        <div class="seccion-formulario">
+             <h3>Extras y Acompañamientos Adicionales</h3>
+             <span class="descripcion" style="display:block; margin-bottom: 10px; color: #583f5b;">Para Sándwiches, Wraps, Hamburguesas y Arreglados que ya incluyen uno base.</span>
+             <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Cambiar a Papas Grandes</span><span class="descripcion">En lugar de papas normales</span></div> <div class="item-precio">+₡700</div> <div class="item-cantidad"><label for="extra_papas_g">Cant:</label><input type="number" id="extra_papas_g" name="extra_papas_g" min="0" value="0" data-nombre="Extra: Papas Grandes" data-precio="700"></div> </div>
+             <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Añadir Salsa de Queso</span></div> <div class="item-precio">+₡500</div> <div class="item-cantidad"><label for="extra_salsa_q">Cant:</label><input type="number" id="extra_salsa_q" name="extra_salsa_q" min="0" value="0" data-nombre="Extra: Salsa de Queso" data-precio="500"></div> </div>
+             <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Añadir Salsa de Tocineta</span></div> <div class="item-precio">+₡500</div> <div class="item-cantidad"><label for="extra_salsa_t">Cant:</label><input type="number" id="extra_salsa_t" name="extra_salsa_t" min="0" value="0" data-nombre="Extra: Salsa Tocineta" data-precio="500"></div> </div>
+             <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Añadir Salsa de Queso y Tocineta</span></div> <div class="item-precio">+₡800</div> <div class="item-cantidad"><label for="extra_salsa_qt">Cant:</label><input type="number" id="extra_salsa_qt" name="extra_salsa_qt" min="0" value="0" data-nombre="Extra: Salsa Queso y Tocineta" data-precio="800"></div> </div>
+             <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Añadir Acompañamiento Adicional</span><span class="descripcion">(Papas, ensalada o crema de tomate)</span></div> <div class="item-precio">+₡1200</div> <div class="item-cantidad"><label for="extra_acomp">Cant:</label><input type="number" id="extra_acomp" name="extra_acomp" min="0" value="0" data-nombre="Extra: Acompañamiento Adicional" data-precio="1200"></div> </div>
+        </div>
+
+        <div class="seccion-formulario">
+            <h3>Pastelería y Empanadas</h3>
+            <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Pastel de palmito</span></div> <div class="item-precio">₡1.400</div> <div class="item-cantidad"><label for="pastel_palmito">Cant:</label><input type="number" id="pastel_palmito" name="pastel_palmito" min="0" value="0" data-nombre="Pastel de palmito" data-precio="1400"></div> </div>
+            <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Pastel de pollo</span></div> <div class="item-precio">₡1.600</div> <div class="item-cantidad"><label for="pastel_pollo">Cant:</label><input type="number" id="pastel_pollo" name="pastel_pollo" min="0" value="0" data-nombre="Pastel de pollo" data-precio="1600"></div> </div>
+            <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Empanada colombiana carne</span></div> <div class="item-precio">₡1.000</div> <div class="item-cantidad"><label for="emp_col_carne">Cant:</label><input type="number" id="emp_col_carne" name="emp_col_carne" min="0" value="0" data-nombre="Empanada colombiana carne" data-precio="1000"></div> </div>
+             <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Empanada colombiana pollo</span></div> <div class="item-precio">₡1.000</div> <div class="item-cantidad"><label for="emp_col_pollo">Cant:</label><input type="number" id="emp_col_pollo" name="emp_col_pollo" min="0" value="0" data-nombre="Empanada colombiana pollo" data-precio="1000"></div> </div>
+            <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Empanada Argentina Carne</span></div> <div class="item-precio">₡2.000</div> <div class="item-cantidad"><label for="emp_arg_carne">Cant:</label><input type="number" id="emp_arg_carne" name="emp_arg_carne" min="0" value="0" data-nombre="Empanada Argentina Carne" data-precio="2000"></div> </div>
+             <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Empanada Argentina Pollo</span></div> <div class="item-precio">₡2.000</div> <div class="item-cantidad"><label for="emp_arg_pollo">Cant:</label><input type="number" id="emp_arg_pollo" name="emp_arg_pollo" min="0" value="0" data-nombre="Empanada Argentina Pollo" data-precio="2000"></div> </div>
+             <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Empanada Argentina Caprese</span></div> <div class="item-precio">₡2.000</div> <div class="item-cantidad"><label for="emp_arg_caprese">Cant:</label><input type="number" id="emp_arg_caprese" name="emp_arg_caprese" min="0" value="0" data-nombre="Empanada Argentina Caprese" data-precio="2000"></div> </div>
+             <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Empanada Argentina Napolitana</span></div> <div class="item-precio">₡2.000</div> <div class="item-cantidad"><label for="emp_arg_napo">Cant:</label><input type="number" id="emp_arg_napo" name="emp_arg_napo" min="0" value="0" data-nombre="Empanada Argentina Napolitana" data-precio="2000"></div> </div>
+        </div>
+
+         <div class="seccion-formulario">
+            <h3>Tostadas</h3>
+            <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Tostadas de tomate, queso y albahaca</span></div> <div class="item-precio">₡3.500</div> <div class="item-cantidad"><label for="tost_tom_queso">Cant:</label><input type="number" id="tost_tom_queso" name="tost_tom_queso" min="0" value="0" data-nombre="Tostadas tomate, queso, albahaca" data-precio="3500"></div> </div>
+            <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Tostadas tradicionales de queso</span></div> <div class="item-precio">₡3.100</div> <div class="item-cantidad"><label for="tost_trad_queso">Cant:</label><input type="number" id="tost_trad_queso" name="tost_trad_queso" min="0" value="0" data-nombre="Tostadas tradicionales queso" data-precio="3100"></div> </div>
+             <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Tostadas con mantequilla, hierbas/ajo</span></div> <div class="item-precio">₡2.300</div> <div class="item-cantidad"><label for="tost_mant_ajo">Cant:</label><input type="number" id="tost_mant_ajo" name="tost_mant_ajo" min="0" value="0" data-nombre="Tostadas mantequilla, hierbas/ajo" data-precio="2300"></div> </div>
+        </div>
+
+         <div class="seccion-formulario">
+            <h3>Repostería 🍒</h3>
+             <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Queque de zanahoria</span></div> <div class="item-precio">₡2.100</div> <div class="item-cantidad"><label for="qq_zanahoria">Cant:</label><input type="number" id="qq_zanahoria" name="qq_zanahoria" min="0" value="0" data-nombre="Queque zanahoria" data-precio="2100"></div> </div>
+             <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Queque de chocolate</span></div> <div class="item-precio">₡2.500</div> <div class="item-cantidad"><label for="qq_choco">Cant:</label><input type="number" id="qq_choco" name="qq_choco" min="0" value="0" data-nombre="Queque chocolate" data-precio="2500"></div> </div>
+            <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Queque de banano</span></div> <div class="item-precio">₡1.750</div> <div class="item-cantidad"><label for="qq_banano">Cant:</label><input type="number" id="qq_banano" name="qq_banano" min="0" value="0" data-nombre="Queque banano" data-precio="1750"></div> </div>
+            <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Pie de limón</span></div> <div class="item-precio">₡1.800</div> <div class="item-cantidad"><label for="pie_limon">Cant:</label><input type="number" id="pie_limon" name="pie_limon" min="0" value="0" data-nombre="Pie de limón" data-precio="1800"></div> </div>
+            <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Brownie</span></div> <div class="item-precio">₡2.300</div> <div class="item-cantidad"><label for="brownie">Cant:</label><input type="number" id="brownie" name="brownie" min="0" value="0" data-nombre="Brownie" data-precio="2300"></div> </div>
+             <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Brownie con helado</span></div> <div class="item-precio">₡2.800</div> <div class="item-cantidad"><label for="brownie_helado">Cant:</label><input type="number" id="brownie_helado" name="brownie_helado" min="0" value="0" data-nombre="Brownie con helado" data-precio="2800"></div> </div>
+            <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Queque de limón</span></div> <div class="item-precio">₡2.100</div> <div class="item-cantidad"><label for="qq_limon">Cant:</label><input type="number" id="qq_limon" name="qq_limon" min="0" value="0" data-nombre="Queque de limón" data-precio="2100"></div> </div>
+             <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Pie de pecanas</span></div> <div class="item-precio">₡2.500</div> <div class="item-cantidad"><label for="pie_pecanas">Cant:</label><input type="number" id="pie_pecanas" name="pie_pecanas" min="0" value="0" data-nombre="Pie de pecanas" data-precio="2500"></div> </div>
+             <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Pie de pecanas con helado</span></div> <div class="item-precio">₡3.000</div> <div class="item-cantidad"><label for="pie_pecanas_helado">Cant:</label><input type="number" id="pie_pecanas_helado" name="pie_pecanas_helado" min="0" value="0" data-nombre="Pie pecanas con helado" data-precio="3000"></div> </div>
+            <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Torta chilena</span></div> <div class="item-precio">₡2.200</div> <div class="item-cantidad"><label for="torta_chilena">Cant:</label><input type="number" id="torta_chilena" name="torta_chilena" min="0" value="0" data-nombre="Torta chilena" data-precio="2200"></div> </div>
+            <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Gatitos</span></div> <div class="item-precio">₡1.500</div> <div class="item-cantidad"><label for="gatitos">Cant:</label><input type="number" id="gatitos" name="gatitos" min="0" value="0" data-nombre="Gatitos" data-precio="1500"></div> </div>
+            <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Alfajores</span></div> <div class="item-precio">₡975</div> <div class="item-cantidad"><label for="alfajores">Cant:</label><input type="number" id="alfajores" name="alfajores" min="0" value="0" data-nombre="Alfajores" data-precio="975"></div> </div>
+            <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Flan de queso</span></div> <div class="item-precio">₡1.850</div> <div class="item-cantidad"><label for="flan_queso">Cant:</label><input type="number" id="flan_queso" name="flan_queso" min="0" value="0" data-nombre="Flan de queso" data-precio="1850"></div> </div>
+             <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Arrollado dulce de leche</span></div> <div class="item-precio">₡1.550</div> <div class="item-cantidad"><label for="arrollado_ddl">Cant:</label><input type="number" id="arrollado_ddl" name="arrollado_ddl" min="0" value="0" data-nombre="Arrollado dulce de leche" data-precio="1550"></div> </div>
+        </div>
+
+        <div class="seccion-formulario">
+            <h3>Café Frío 🍒</h3>
+             <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Café sniker con chantilly</span></div> <div class="item-precio">₡3.300</div> <div class="item-cantidad"><label for="cafe_sniker">Cant:</label><input type="number" id="cafe_sniker" name="cafe_sniker" min="0" value="0" data-nombre="Café sniker c/ chantilly" data-precio="3300"></div> </div>
+            <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Mocca menta con chantilly</span></div> <div class="item-precio">₡3.200</div> <div class="item-cantidad"><label for="mocca_menta">Cant:</label><input type="number" id="mocca_menta" name="mocca_menta" min="0" value="0" data-nombre="Mocca menta c/ chantilly" data-precio="3200"></div> </div>
+            <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Café rollo de canela con chantilly</span></div> <div class="item-precio">₡3.100</div> <div class="item-cantidad"><label for="cafe_rollo">Cant:</label><input type="number" id="cafe_rollo" name="cafe_rollo" min="0" value="0" data-nombre="Café rollo canela c/ chantilly" data-precio="3100"></div> </div>
+            <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Oreo con chantilly</span></div> <div class="item-precio">₡3.300</div> <div class="item-cantidad"><label for="cafe_oreo">Cant:</label><input type="number" id="cafe_oreo" name="cafe_oreo" min="0" value="0" data-nombre="Oreo c/ chantilly" data-precio="3300"></div> </div>
+            <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Iced Coffee</span></div> <div class="item-precio">₡1.500</div> <div class="item-cantidad"><label for="iced_coffee">Cant:</label><input type="number" id="iced_coffee" name="iced_coffee" min="0" value="0" data-nombre="Iced Coffee" data-precio="1500"></div> </div>
+            <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Iced latte</span><span class="descripcion">(hielo, espresso, leche)</span></div> <div class="item-precio">₡2.000</div> <div class="item-cantidad"><label for="iced_latte">Cant:</label><input type="number" id="iced_latte" name="iced_latte" min="0" value="0" data-nombre="Iced latte" data-precio="2000"></div> </div>
+            <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Iced coffee saborizado</span><span class="descripcion">(vainilla, menta, amaretto, chocolate, marshmallow, caramelo - especificar en notas)</span></div> <div class="item-precio">₡2.400</div> <div class="item-cantidad"><label for="iced_coffee_sabor">Cant:</label><input type="number" id="iced_coffee_sabor" name="iced_coffee_sabor" min="0" value="0" data-nombre="Iced coffee saborizado" data-precio="2400"></div> </div>
+        </div>
+
+        <div class="seccion-formulario">
+             <h3>Bebidas Frías 🍒</h3>
+             <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Gaseosa 600 ml</span></div> <div class="item-precio">₡1.100</div> <div class="item-cantidad"><label for="gas_600">Cant:</label><input type="number" id="gas_600" name="gas_600" min="0" value="0" data-nombre="Gaseosa 600 ml" data-precio="1100"></div> </div>
+            <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Gaseosa vidrio 375 ml</span></div> <div class="item-precio">₡800</div> <div class="item-cantidad"><label for="gas_vidrio">Cant:</label><input type="number" id="gas_vidrio" name="gas_vidrio" min="0" value="0" data-nombre="Gaseosa vidrio 375 ml" data-precio="800"></div> </div>
+            <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Sprite en lata</span></div> <div class="item-precio">₡900</div> <div class="item-cantidad"><label for="sprite_lata">Cant:</label><input type="number" id="sprite_lata" name="sprite_lata" min="0" value="0" data-nombre="Sprite en lata" data-precio="900"></div> </div>
+            <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Milkshake vainilla</span></div> <div class="item-precio">₡3.200</div> <div class="item-cantidad"><label for="milk_vainilla">Cant:</label><input type="number" id="milk_vainilla" name="milk_vainilla" min="0" value="0" data-nombre="Milkshake vainilla" data-precio="3200"></div> </div>
+             <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Milkshake chocolate</span></div> <div class="item-precio">₡3.200</div> <div class="item-cantidad"><label for="milk_choco">Cant:</label><input type="number" id="milk_choco" name="milk_choco" min="0" value="0" data-nombre="Milkshake chocolate" data-precio="3200"></div> </div>
+            <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Té chai con helado</span></div> <div class="item-precio">₡2.700</div> <div class="item-cantidad"><label for="chai_helado">Cant:</label><input type="number" id="chai_helado" name="chai_helado" min="0" value="0" data-nombre="Té chai con helado" data-precio="2700"></div> </div>
+            <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Fuze tea</span></div> <div class="item-precio">₡900</div> <div class="item-cantidad"><label for="fuze_tea">Cant:</label><input type="number" id="fuze_tea" name="fuze_tea" min="0" value="0" data-nombre="Fuze tea" data-precio="900"></div> </div>
+            <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Smoothie Tradicional AGUA</span><span class="descripcion">(Piña, papaya, melón, sandía, cas, limonada - especificar sabor en notas)</span></div> <div class="item-precio">₡1.700</div> <div class="item-cantidad"><label for="smooth_trad_agua">Cant:</label><input type="number" id="smooth_trad_agua" name="smooth_trad_agua" min="0" value="0" data-nombre="Smoothie Trad. AGUA" data-precio="1700"></div> </div>
+            <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Smoothie Tradicional LECHE</span><span class="descripcion">(Piña, papaya, melón, sandía, cas, limonada - especificar sabor en notas)</span></div> <div class="item-precio">₡2.000</div> <div class="item-cantidad"><label for="smooth_trad_leche">Cant:</label><input type="number" id="smooth_trad_leche" name="smooth_trad_leche" min="0" value="0" data-nombre="Smoothie Trad. LECHE" data-precio="2000"></div> </div>
+             <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Smoothie Deluxe AGUA</span><span class="descripcion">(Guanábana, mango/maracuyá, fresa - especificar sabor en notas)</span></div> <div class="item-precio">₡1.900</div> <div class="item-cantidad"><label for="smooth_deluxe_agua">Cant:</label><input type="number" id="smooth_deluxe_agua" name="smooth_deluxe_agua" min="0" value="0" data-nombre="Smoothie Deluxe AGUA" data-precio="1900"></div> </div>
+            <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Smoothie Deluxe LECHE</span><span class="descripcion">(Guanábana, mango/maracuyá, fresa - especificar sabor en notas)</span></div> <div class="item-precio">₡2.200</div> <div class="item-cantidad"><label for="smooth_deluxe_leche">Cant:</label><input type="number" id="smooth_deluxe_leche" name="smooth_deluxe_leche" min="0" value="0" data-nombre="Smoothie Deluxe LECHE" data-precio="2200"></div> </div>
+            <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Añadir Hierba Buena a Smoothie</span></div> <div class="item-precio">+₡200</div> <div class="item-cantidad"><label for="extra_hierba">Cant:</label><input type="number" id="extra_hierba" name="extra_hierba" min="0" value="0" data-nombre="Extra: Hierba Buena" data-precio="200"></div> </div>
+        </div>
+
+         <div class="seccion-formulario">
+            <h3>Bebidas Calientes 🍒</h3>
+            <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Café negro</span></div> <div class="item-precio">₡1.100</div> <div class="item-cantidad"><label for="cafe_negro">Cant:</label><input type="number" id="cafe_negro" name="cafe_negro" min="0" value="0" data-nombre="Café negro" data-precio="1100"></div> </div>
+             <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Café con leche</span></div> <div class="item-precio">₡1.350</div> <div class="item-cantidad"><label for="cafe_leche">Cant:</label><input type="number" id="cafe_leche" name="cafe_leche" min="0" value="0" data-nombre="Café con leche" data-precio="1350"></div> </div>
+             <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Expreso</span></div> <div class="item-precio">₡900</div> <div class="item-cantidad"><label for="expreso">Cant:</label><input type="number" id="expreso" name="expreso" min="0" value="0" data-nombre="Expreso" data-precio="900"></div> </div>
+             <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Expreso doble</span></div> <div class="item-precio">₡1.300</div> <div class="item-cantidad"><label for="expreso_doble">Cant:</label><input type="number" id="expreso_doble" name="expreso_doble" min="0" value="0" data-nombre="Expreso doble" data-precio="1300"></div> </div>
+             <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Expreso cortado</span></div> <div class="item-precio">₡1.400</div> <div class="item-cantidad"><label for="expreso_cortado">Cant:</label><input type="number" id="expreso_cortado" name="expreso_cortado" min="0" value="0" data-nombre="Expreso cortado" data-precio="1400"></div> </div>
+            <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Moccacino Pequeño</span></div> <div class="item-precio">₡1.600</div> <div class="item-cantidad"><label for="mocca_peq">Cant:</label><input type="number" id="mocca_peq" name="mocca_peq" min="0" value="0" data-nombre="Moccacino Pequeño" data-precio="1600"></div> </div>
+            <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Moccacino grande</span></div> <div class="item-precio">₡2.200</div> <div class="item-cantidad"><label for="mocca_gra">Cant:</label><input type="number" id="mocca_gra" name="mocca_gra" min="0" value="0" data-nombre="Moccacino grande" data-precio="2200"></div> </div>
+            <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Capuccino pequeño</span></div> <div class="item-precio">₡1.500</div> <div class="item-cantidad"><label for="capu_peq">Cant:</label><input type="number" id="capu_peq" name="capu_peq" min="0" value="0" data-nombre="Capuccino pequeño" data-precio="1500"></div> </div>
+            <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Capuccino grande</span></div> <div class="item-precio">₡2.000</div> <div class="item-cantidad"><label for="capu_gra">Cant:</label><input type="number" id="capu_gra" name="capu_gra" min="0" value="0" data-nombre="Capuccino grande" data-precio="2000"></div> </div>
+             <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Latte Pequeño</span></div> <div class="item-precio">₡1.300</div> <div class="item-cantidad"><label for="latte_peq">Cant:</label><input type="number" id="latte_peq" name="latte_peq" min="0" value="0" data-nombre="Latte Pequeño" data-precio="1300"></div> </div>
+             <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Latte Grande</span></div> <div class="item-precio">₡1.600</div> <div class="item-cantidad"><label for="latte_gra">Cant:</label><input type="number" id="latte_gra" name="latte_gra" min="0" value="0" data-nombre="Latte Grande" data-precio="1600"></div> </div>
+            <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Capuccino saborizado pequeño</span><span class="descripcion">(Especificar sabor en notas)</span></div> <div class="item-precio">₡1.600</div> <div class="item-cantidad"><label for="capu_sabor_peq">Cant:</label><input type="number" id="capu_sabor_peq" name="capu_sabor_peq" min="0" value="0" data-nombre="Capuccino saborizado peq" data-precio="1600"></div> </div>
+             <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Capuccino saborizado grande</span><span class="descripcion">(Especificar sabor en notas)</span></div> <div class="item-precio">₡2.200</div> <div class="item-cantidad"><label for="capu_sabor_gra">Cant:</label><input type="number" id="capu_sabor_gra" name="capu_sabor_gra" min="0" value="0" data-nombre="Capuccino saborizado grande" data-precio="2200"></div> </div>
+             <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Agua dulce</span></div> <div class="item-precio">₡1.000</div> <div class="item-cantidad"><label for="agua_dulce">Cant:</label><input type="number" id="agua_dulce" name="agua_dulce" min="0" value="0" data-nombre="Agua dulce" data-precio="1000"></div> </div>
+             <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Agua dulce con leche</span></div> <div class="item-precio">₡1.200</div> <div class="item-cantidad"><label for="agua_dulce_leche">Cant:</label><input type="number" id="agua_dulce_leche" name="agua_dulce_leche" min="0" value="0" data-nombre="Agua dulce con leche" data-precio="1200"></div> </div>
+             <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Chocolate caliente</span></div> <div class="item-precio">₡1.400</div> <div class="item-cantidad"><label for="choco_cal">Cant:</label><input type="number" id="choco_cal" name="choco_cal" min="0" value="0" data-nombre="Chocolate caliente" data-precio="1400"></div> </div>
+            <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Chocolate con marshmallow</span></div> <div class="item-precio">₡1.700</div> <div class="item-cantidad"><label for="choco_marsh">Cant:</label><input type="number" id="choco_marsh" name="choco_marsh" min="0" value="0" data-nombre="Chocolate c/ marshmallow" data-precio="1700"></div> </div>
+             <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Té Chai</span></div> <div class="item-precio">₡1.700</div> <div class="item-cantidad"><label for="te_chai">Cant:</label><input type="number" id="te_chai" name="te_chai" min="0" value="0" data-nombre="Té Chai" data-precio="1700"></div> </div>
+            <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Té negro</span></div> <div class="item-precio">₡950</div> <div class="item-cantidad"><label for="te_negro">Cant:</label><input type="number" id="te_negro" name="te_negro" min="0" value="0" data-nombre="Té negro" data-precio="950"></div> </div>
+             <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Té negro con leche</span></div> <div class="item-precio">₡1.100</div> <div class="item-cantidad"><label for="te_negro_leche">Cant:</label><input type="number" id="te_negro_leche" name="te_negro_leche" min="0" value="0" data-nombre="Té negro con leche" data-precio="1100"></div> </div>
+            <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Café negro chorreado</span></div> <div class="item-precio">₡1.200</div> <div class="item-cantidad"><label for="cafe_chorreado">Cant:</label><input type="number" id="cafe_chorreado" name="cafe_chorreado" min="0" value="0" data-nombre="Café negro chorreado" data-precio="1200"></div> </div>
+            <div class="item-menu"> <div class="item-info"><span class="nombre-principal">Café con leche chorreado</span></div> <div class="item-precio">₡1.300</div> <div class="item-cantidad"><label for="cafe_chorreado_leche">Cant:</label><input type="number" id="cafe_chorreado_leche" name="cafe_chorreado_leche" min="0" value="0" data-nombre="Café con leche chorreado" data-precio="1300"></div> </div>
+        </div>
+
+        <div class="seccion-formulario">
+              <h3>Notas Adicionales</h3>
+              <div id="notas-container">
+                   <label for="notas">¿Alguna indicación especial? (Ej: Sin cebolla, Sándwich con papas, Smoothie de fresa en agua, Cambio de carbohidrato para Tilapia, Sabor Iced Coffee, etc.)</label>
+                   <textarea id="notas" name="notas" rows="4" placeholder="Escribe aquí tus indicaciones..."></textarea>
+              </div>
+        </div>
+
+        <button type="button" id="generar-pedido">Revisar Pedido</button>
+
+    </form>
+</div>
+
+<div class="modal-overlay" id="modal-confirmacion">
+    <div class="modal-content">
+        <span class="modal-close-btn" id="modal-boton-x">&times;</span>
+        <h3>Revisa tu Pedido</h3>
+        <pre id="modal-resumen-texto"></pre>
+        <div class="modal-botones">
+            <button type="button" id="modal-boton-cerrar">Corregir Pedido</button>
+            <a href="#" id="modal-boton-enviar" target="_blank">Enviar por WhatsApp</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- Script con lógica de formato diferenciado para Modal y WhatsApp ---
+    // !! CAMBIAR ESTE NÚMERO POR EL WHATSAPP REAL DE CEREZAS DEL CAFÉ !!
+    const numeroWhatsApp = '50664304540'; // <-- REEMPLAZAR CON EL NÚMERO CORRECTO
+    const botonGenerar = document.getElementById('generar-pedido');
+    const modalOverlay = document.getElementById('modal-confirmacion');
+    const modalTextoResumen = document.getElementById('modal-resumen-texto');
+    const modalBotonCerrar = document.getElementById('modal-boton-cerrar');
+    const modalBotonX = document.getElementById('modal-boton-x');
+    const modalBotonEnviar = document.getElementById('modal-boton-enviar');
+    const formulario = document.getElementById('menu-form');
+    const campoNotas = document.getElementById('notas');
+    const campoNombre = document.getElementById('cliente-nombre');
+    const campoTelefono = document.getElementById('cliente-telefono');
+    const divError = document.getElementById('mensaje-error');
+
+    function mostrarError(mensaje) {
+        divError.textContent = mensaje;
+        divError.style.display = 'block';
+    }
+    function cerrarModal() {
+        modalOverlay.style.display = 'none';
+    }
+
+    botonGenerar.addEventListener('click', () => {
+        divError.style.display = 'none'; divError.textContent = '';
+        const clienteNombre = campoNombre.value.trim();
+        const clienteTelefono = campoTelefono.value.trim();
+
+        // --- Validaciones ---
+        if (!clienteNombre) { mostrarError('Por favor, ingresa tu nombre.'); campoNombre.focus(); return; }
+        if (!clienteTelefono) { mostrarError('Por favor, ingresa tu número de teléfono.'); campoTelefono.focus(); return; }
+        const telefonoPattern = /^[0-9]{4}-?[0-9]{4}$/;
+        if (!telefonoPattern.test(clienteTelefono)) { mostrarError('Por favor, ingresa un número de teléfono válido (Ej: 8888-8888 o 88888888).'); campoTelefono.focus(); return; }
+
+        // --- Construcción del Mensaje ---
+        // Cambiado el saludo para reflejar el nuevo restaurante
+        let mensajeWhatsApp = `*Pedido para:* ${clienteNombre}\n*Teléfono:* ${clienteTelefono}\n--------------------\n`;
+        mensajeWhatsApp += '¡Hola Cerezas del Café! Quisiera hacer el siguiente pedido:\n';
+        let mensajeModal = `Pedido para: ${clienteNombre}\nTeléfono: ${clienteTelefono}\n--------------------\n`;
+        mensajeModal += '¡Hola Cerezas del Café! Quisiera hacer el siguiente pedido:\n';
+
+        let totalPedido = 0;
+        let hayItems = false;
+        const inputsCantidad = formulario.querySelectorAll('input[type="number"]');
+
+        inputsCantidad.forEach(input => {
+            const cantidad = parseInt(input.value);
+            if (cantidad > 0) {
+                hayItems = true;
+                const nombre = input.getAttribute('data-nombre');
+                const precio = parseFloat(input.getAttribute('data-precio'));
+                const lineaPedido = `\n- ${cantidad} x ${nombre}`;
+                mensajeWhatsApp += lineaPedido;
+                mensajeModal += lineaPedido;
+                totalPedido += cantidad * precio;
+            }
+        });
+
+         if (!hayItems) {
+            mostrarError('Por favor, selecciona la cantidad de al menos un producto.');
+            const primerInputCantidad = formulario.querySelector('.item-cantidad input[type="number"]');
+            if(primerInputCantidad) primerInputCantidad.focus();
+            return;
+        }
+
+        const notas = campoNotas.value.trim();
+        if (notas) {
+             const lineaNotas = `\n\n*Notas Adicionales:* ${notas}`;
+             const lineaNotasModal = `\n\nNotas Adicionales: ${notas}`;
+             mensajeWhatsApp += lineaNotas;
+             mensajeModal += lineaNotasModal;
+        }
+
+        // --- Añadir Total, Nota de Servicio y Opción SINPE ---
+        const numeroFormateado = totalPedido.toLocaleString('es-CR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        const totalConSimbolo = `₡ ${numeroFormateado}`;
+
+        const separador = `\n\n--------------------`;
+        const lineaTotalWhatsApp = `\n*Total Aproximado:* ${totalConSimbolo}`;
+        const lineaTotalModal = `\nTotal Aproximado: ${totalConSimbolo}`;
+        // ** Nueva línea para el servicio **
+        const notaServicio = `\n_(Precios no incluyen 10% de servicio)_`;
+
+        const sinpeNumero = numeroWhatsApp.slice(-8);
+        const sinpeFormateado = `${sinpeNumero.slice(0, 4)}-${sinpeNumero.slice(4)}`;
+        const lineaSinpeWhatsApp = `\n\nPuedes pagar por *SINPE Móvil* al: *${sinpeFormateado}*`;
+        const lineaSinpeModal = `\n\nPuedes pagar por SINPE Móvil al: ${sinpeFormateado}`;
+
+        const agradecimiento = '\n\n¡Gracias por su pedido!';
+
+        // Construir mensajes finales incluyendo nota de servicio
+        mensajeWhatsApp += separador + lineaTotalWhatsApp + notaServicio + lineaSinpeWhatsApp + agradecimiento;
+        mensajeModal += separador + lineaTotalModal + notaServicio + lineaSinpeModal + agradecimiento;
+
+
+        // --- Mostrar el Modal ---
+        modalTextoResumen.textContent = mensajeModal;
+
+        const mensajeCodificado = encodeURIComponent(mensajeWhatsApp);
+        const urlWhatsApp = `https://wa.me/${numeroWhatsApp}?text=${mensajeCodificado}`;
+        modalBotonEnviar.href = urlWhatsApp;
+
+        modalOverlay.style.display = 'flex';
+    });
+
+    // --- Event listeners del Modal (sin cambios) ---
+    modalBotonCerrar.addEventListener('click', cerrarModal);
+    modalBotonX.addEventListener('click', cerrarModal);
+    modalOverlay.addEventListener('click', (event) => { if (event.target === modalOverlay) { cerrarModal(); } });
+    modalBotonEnviar.addEventListener('click', () => { setTimeout(cerrarModal, 300); });
+</script>
+
+</body>
+</html>
