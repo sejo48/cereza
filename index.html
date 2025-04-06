@@ -409,8 +409,8 @@
 
 <script>
     // --- Script con lógica de formato diferenciado para Modal y WhatsApp ---
-    // !! CAMBIAR ESTE NÚMERO POR EL WHATSAPP REAL DE CEREZAS DEL CAFÉ !!
-    const numeroWhatsApp = '50664304540'; // <-- REEMPLAZAR CON EL NÚMERO CORRECTO
+    // Número de WhatsApp actualizado según solicitud
+    const numeroWhatsApp = '50660132444'; // <--- NUEVO NÚMERO AQUÍ
     const botonGenerar = document.getElementById('generar-pedido');
     const modalOverlay = document.getElementById('modal-confirmacion');
     const modalTextoResumen = document.getElementById('modal-resumen-texto');
@@ -491,8 +491,9 @@
         // ** Nueva línea para el servicio **
         const notaServicio = `\n_(Precios no incluyen 10% de servicio)_`;
 
-        const sinpeNumero = numeroWhatsApp.slice(-8);
-        const sinpeFormateado = `${sinpeNumero.slice(0, 4)}-${sinpeNumero.slice(4)}`;
+        // Extraer y formatear número SINPE del nuevo número de WhatsApp
+        const sinpeNumero = numeroWhatsApp.slice(-8); // Extrae los últimos 8 dígitos (60132444)
+        const sinpeFormateado = `${sinpeNumero.slice(0, 4)}-${sinpeNumero.slice(4)}`; // Formatea a 6013-2444
         const lineaSinpeWhatsApp = `\n\nPuedes pagar por *SINPE Móvil* al: *${sinpeFormateado}*`;
         const lineaSinpeModal = `\n\nPuedes pagar por SINPE Móvil al: ${sinpeFormateado}`;
 
@@ -507,6 +508,7 @@
         modalTextoResumen.textContent = mensajeModal;
 
         const mensajeCodificado = encodeURIComponent(mensajeWhatsApp);
+        // El enlace usará el nuevo númeroWhatsApp
         const urlWhatsApp = `https://wa.me/${numeroWhatsApp}?text=${mensajeCodificado}`;
         modalBotonEnviar.href = urlWhatsApp;
 
